@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mental Health Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <div class="container">
+        <!-- <header class="header">
+            <h1 id="title" class="text-center">Mental Health Prediction App</h1>
+            <p id="description" class="description text-center">
+            Share how you feel at the moment to know the likely state of your mental health
+            </p>
+          </header> -->
+        <div class="col-md-7 col-xs-12 col-md-offset-2">
+            <div class="panel" id="chat">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="icon wb-chat-text" aria-hidden="true"></i> Mental Health Prediction App
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="chats">
+                        <!-- Previous chat message -->
+                        <div class="chat">
+                            <div class="chat-avatar">
+                                <a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="right" title data-original-title="June Lane">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                                    <i></i>
+                                </a>
+                            </div>
+                            <div class="chat-body">
+                                <div class="chat-content">
+                                    <p>{{ prev_chat_message | safe }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- User input text -->
+                        {% if user_text %}
+                        <div class="chat chat-left">
+                            <div class="chat-avatar">
+                                <a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="right" title data-original-title="You">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="...">
+                                    <i></i>
+                                </a>
+                            </div>
+                            <div class="chat-body">
+                                <div class="chat-content">
+                                    <p>{{ user_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <!-- Prediction result -->
+                        <div class="chat">
+                            <div class="chat-avatar">
+                                <a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="right" title data-original-title="System">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                                    <i></i>
+                                </a>
+                            </div>
+                            <div class="chat-body">
+                                <div class="chat-content">
+                                    <p>{{ prediction_result }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-footer">
+                    <form id="text-form" method="post">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="user-text" name="user_text" placeholder="Type your text here">
+                            <input type="hidden" name="prev_chat_message" value="{{ prev_chat_message }}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Send</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</body>
+</html>
