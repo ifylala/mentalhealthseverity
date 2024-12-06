@@ -64,54 +64,95 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 svc_model.fit(X_train, y_train)
 
 # Route for the main page
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')  # Use .get() to avoid KeyError
-        password = request.form.get('password')
-
-        if not username or not password:
-            return "Missing username or password", 400  # Handle empty input gracefully
-
-        # Set session and redirect (simplified example)
-        session['user'] = username
-        return redirect(url_for('index'))
-
-    return render_template('login.html')
-
-
-
-@app.route('/signup', methods=['GET', 'POST'])
+# Sign-Up Page (Root)
+@app.route('/', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username']
+        # Get email and password from the form (but don't store or validate)
+        email = request.form['email']
         password = request.form['password']
 
-        # Check if user already exists
-        if username in users_db:
-            return "User already exists", 400
-
-        # Hash password and store user
-        hashed_password = generate_password_hash(password, method='sha256')
-        users_db[username] = {'password': hashed_password}
-        return redirect(url_for('login'))  # Redirect to login
+        # Proceed to the login page after signup
+        return redirect(url_for('login'))
 
     return render_template('signup.html')
 
-@app.route('/', methods=['GET'])
-def home():
-    if 'user' not in session:
-        return redirect(url_for('login'))  # Redirect to login page if not logged in
-    return redirect(url_for('index'))  # Redirect to the index page if logged in
+# Login Page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Capture username from the form
+        username = request.form.get('username')
+        
+        if not username:  # Ensure username is provided
+            return "Username is required", 400
+        
+        # Set session with the username
+        session['user'] = username
+
+        # Redirect to the index page
+        return redirect(url_for('index'))
+
+    return render_template('login.html')  # Render login page on GET
+
+
+# Index Page (Protected)
+@app.route('/index')
+def index():
+    if 'user' not in session:  # Check if user is logged in
+        return redirect(url_for('login'))  # Redirect to login if not
+    prev_chat_message = "Hello There, <br> Share how you feel to predict your likely mental health state"
+    return render_template('index.html', prev_chat_message=prev_chat_message)
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         username = request.form.get('username')  # Use .get() to avoid KeyError
+#         password = request.form.get('password')
+
+#         if not username or not password:
+#             return "Missing username or password", 400  # Handle empty input gracefully
+
+#         # Set session and redirect (simplified example)
+#         session['user'] = username
+#         return redirect(url_for('index'))
+
+#     return render_template('login.html')
+
+
+
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         # Check if user already exists
+#         if username in users_db:
+#             return "User already exists", 400
+
+#         # Hash password and store user
+#         hashed_password = generate_password_hash(password, method='sha256')
+#         users_db[username] = {'password': hashed_password}
+#         return redirect(url_for('login'))  # Redirect to login
+
+#     return render_template('signup.html')
+
+# @app.route('/', methods=['GET'])
+# def home():
+#     if 'user' not in session:
+#         return redirect(url_for('login'))  # Redirect to login page if not logged in
+#     return redirect(url_for('index'))  # Redirect to the index page if logged in
 
 
 # Main page route (requires authentication)
-@app.route('/index')
-def index():
-    if 'user' not in session:
-        return redirect(url_for('login'))  # Redirect to login if not authenticated
-    prev_chat_message = "Hello There, <br> Share how you feel to predict your likely mental health state"
-    return render_template('index.html', prev_chat_message=prev_chat_message)
+# @app.route('/index')
+# def index():
+#     if 'user' not in session:
+#         return redirect(url_for('login'))  # Redirect to login if not authenticated
+#     prev_chat_message = "Hello There, <br> Share how you feel to predict your likely mental health state"
+#     return render_template('index.html', prev_chat_message=prev_chat_message)
 
 
 
