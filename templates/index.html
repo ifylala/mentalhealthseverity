@@ -72,9 +72,9 @@
                 </div>
                 
                 <div class="panel-footer">
-                    <form id="text-form" method="post">
+                    <form id="text-form" method="post" action="{{ url_for('predict') }}">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="user-text" name="user_text" placeholder="Type your text here">
+                            <input type="text" class="form-control" id="user-text" name="user_text" placeholder="Type your text here" required>
                             <input type="hidden" name="prev_chat_message" value="{{ prev_chat_message }}">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">Send</button>
