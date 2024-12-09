@@ -82,44 +82,86 @@ def index():
     return render_template('index.html', prev_chat_message=prev_chat_message)
 
 
-# Route to handle form submission and display the predictive result
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+# Initialize VADER Sentiment Analyzer
+analyzer = SentimentIntensityAnalyzer()
+
+# Function to categorize severity based on sentiment score from VADER
+def get_severity_vader(text):
+    score = analyzer.polarity_scores(text)["compound"]
+    if score > 0.2:
+        return "Mild"
+    elif -0.2 <= score <= 0.2:
+        return "Moderate"
+    else:
+        return "Severe"
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'user' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login'))  # Ensure the user is logged in
 
     user_text = request.form.get('user_text', '')
-    if not user_text.strip():
-        return render_template('index.html', prev_chat_message="Please enter some text to analyze.")
 
-    # Preprocess user input
+    if not user_text.strip():  # If user doesn't provide any input
+        return render_template('index.html', chat_history=session.get('chat_history', []), 
+                               error="Please enter some text to analyze.")
+    
+    # Preprocess the input text
     preprocessed_text = preprocess_text(user_text)
 
-    # Vectorize text for both models
+    # Vectorize the text for the status model
     tfidf_features_status = tfidf_vectorizer_status.transform([preprocessed_text])
+
+    # Predict status using the SVM model
+    prediction_status_encoded = svc_model_status.predict(tfidf_features_status)[0]
+
+    # Decode the status prediction
+    status_result = status_encoder.inverse_transform([prediction_status_encoded])[0]
+
+    # Use VADER sentiment analysis to get an initial severity classification
+    severity_result_vader = get_severity_vader(user_text)
+
+    # Vectorize the text for the severity prediction model (SVM)
     tfidf_features_severity = tfidf_vectorizer_severity.transform([preprocessed_text])
 
-    # Predict using the SVM models
-    prediction_status_encoded = svc_model_status.predict(tfidf_features_status)[0]
+    # Predict severity using the SVM model
     prediction_severity_encoded = svc_model_severity.predict(tfidf_features_severity)[0]
 
-    # Decode the predictions to the actual labels
-    status_result = status_encoder.inverse_transform([prediction_status_encoded])[0]
-    severity_result = severity_encoder.inverse_transform([prediction_severity_encoded])[0]
+    # Decode the severity prediction from the SVM model
+    severity_result_svm_encoded = severity_encoder.inverse_transform([prediction_severity_encoded])[0]
 
-    # Map severity levels (optional, if necessary)
-    if severity_result == 0:
-        severity_result = "Mild"
-    elif severity_result == 1:
-        severity_result = "Moderate"
-    elif severity_result == 2:
-        severity_result = "Severe"
+    # Combine severity from VADER and SVM
+    if severity_result_vader != severity_result_svm_encoded:
+        severity_result = severity_result_svm_encoded
+    else:
+        severity_result = severity_result_vader
 
-    # Return the result to the user
-    prev_chat_message = f"You said: {user_text}<br>Status: {status_result}<br>Severity: {severity_result}"
-    return render_template('index.html', prev_chat_message=prev_chat_message)
+    # Check for progression in status
+    chat_history = session.get('chat_history', [])
+    status_progression_message = ""
 
+    if chat_history:
+        last_status = chat_history[-1].get('status')
+        if last_status and last_status != status_result:
+            status_progression_message = f"Your mental status has changed from {last_status} to {status_result}."
 
+    # Build a new chat entry
+    new_chat_entry = {
+        'user_text': user_text,
+        'status': status_result,
+        'severity': severity_result,
+        'progression_message': status_progression_message
+    }
+
+    # Update the chat history in session
+    chat_history.append(new_chat_entry)
+    session['chat_history'] = chat_history
+
+    # Render the updated chat interface with the conversation history
+    return render_template('index.html', chat_history=chat_history)
 
 
 # Main entry point

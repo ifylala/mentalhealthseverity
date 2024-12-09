@@ -1,13 +1,14 @@
-/* CSS styles in style.css */
+/* General styles */
 body {
     background: #ddd;
     margin-top: 10px;
-    background-image:url(https://cdn.pixabay.com/photo/2022/10/18/11/02/mental-health-7529899_1280.png);
+    background-image: url(https://cdn.pixabay.com/photo/2022/10/18/11/02/mental-health-7529899_1280.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji', sans-serif;
 }
+
 body::before {
     content: "";
     position: absolute;
@@ -17,65 +18,52 @@ body::before {
     height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); /* Adjust the opacity as needed */
 }
+
 .chat-box {
     height: 100%;
     width: 100%;
     background-color: #fff;
     overflow: hidden;
 }
+
 .chats {
     padding: 30px 15px;
 }
+
 .chat {
     margin-bottom: 20px;
 }
-/* .chat-body {
-    margin-top: 10px;
-} */
+
+/* Avatar and message styling */
+.chat-avatar {
+    float: left;
+}
+
+.chat-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
 .chat-body {
     display: block;
     margin: 10px 30px 0 0;
     overflow: hidden;
-}
-.chat-avatar {
-    float: right
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 
-.chat-avatar .avatar {
-    width: 30px;
-        -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2),0 6px 10px 0 rgba(0,0,0,0.3);
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2),0 6px 10px 0 rgba(0,0,0,0.3);
-}
-.avatar img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border: 0 none;
-    border-radius: 1000px;
-}
-.chat-avatar .avatar {
-    width: 30px;
-}
-.avatar {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    white-space: nowrap;
-    border-radius: 1000px;
-    vertical-align: bottom;
-}
 .chat-content {
     position: relative;
     display: block;
-    float: right;
     padding: 8px 15px;
     margin: 0 20px 10px 0;
-    clear: both;
     color: #fff;
     background-color: #62a8ea;
     border-radius: 4px;
-        -webkit-box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
-    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
 .chat-content:before {
@@ -90,36 +78,53 @@ body::before {
 }
 
 .chat-left .chat-avatar {
-    float: left
+    float: left;
 }
 
 .chat-left .chat-body {
+    margin-left: 30px;
     margin-right: 0;
-    margin-left: 30px
 }
 
 .chat-left .chat-content {
     float: left;
     margin: 0 0 10px 20px;
-    color: #76838f;
-    background-color: #dfe9ef
+    color: #ffffff;
+    background-color: #5a99ee;
 }
 
 .chat-left .chat-content:before {
     right: auto;
     left: -10px;
     border-right-color: #dfe9ef;
-    border-left-color: transparent
+    border-left-color: transparent;
 }
 
-.chat-left .chat-content+.chat-content:before {
-    border-color: transparent
+.chat-right .chat-avatar {
+    float: right;
 }
 
-.panel-title {
-    text-align: center;
-    margin-top: 25px;
-    font-size: 18px;
+.chat-right .chat-body {
+    margin-left: 0;
+    margin-right: 30px;
+}
+
+.chat-right .chat-content {
+    float: right;
+    margin: 0 20px 10px 0;
+    color: #ffffff;
+    background-color:  #fc6d4c;
+}
+
+.chat-right .chat-content:before {
+    right: -10px;
+    left: auto;
+    border-right-color: transparent;
+    border-left-color: #d1f7d1;
+}
+
+.panel {
+    margin: 50px;
 }
 
 .panel-footer {
@@ -129,7 +134,27 @@ body::before {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
 }
-.panel {
-    margin: 50px;
+
+.panel-title {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 18px;
 }
 
+/* Ensure proper positioning for left and right chat bubbles */
+.chat-left {
+    text-align: left;
+    /* background-color: #f0f0f0; */
+}
+
+.chat-right {
+    text-align: right;
+    /* background-color: #d1f7d1; */
+}
+
+/* Optional: Style the avatars */
+.chat-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
