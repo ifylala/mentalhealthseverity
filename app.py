@@ -13,8 +13,8 @@ app = Flask(__name__)
 app.secret_key = 'e591885bce2b1a2d19a6384c98c8fdf6d8a81c4df749e4a394b74f18e64cfa3b'
 
 # Load the trained models and vectorizers
-svc_model_status = joblib.load("saved_models/svm_model_status.pkl")
-svc_model_severity = joblib.load("saved_models/svm_model_severity.pkl")
+svc_model_status = joblib.load("saved_models/tuned_svm_model_status.pkl")
+svc_model_severity = joblib.load("saved_models/tuned_svm_model_severity.pkl")
 tfidf_vectorizer_status = joblib.load("saved_models/tfidf_vectorizer_status.pkl")
 tfidf_vectorizer_severity = joblib.load("saved_models/tfidf_vectorizer_severity.pkl")
 
@@ -158,6 +158,11 @@ def predict():
 
     # Update the chat history in session
     chat_history.append(new_chat_entry)
+
+    # Limit chat history to the last 10 entries
+    chat_history = chat_history[-5:]
+
+    # Save the updated chat history back to the session
     session['chat_history'] = chat_history
 
     # Render the updated chat interface with the conversation history
