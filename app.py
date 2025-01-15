@@ -5,12 +5,22 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from dotenv import load_dotenv
+import os
 
 # Flask app initialization
 app = Flask(__name__)
 
 # Set a secret key for session management
-app.secret_key = 'e591885bce2b1a2d19a6384c98c8fdf6d8a81c4df749e4a394b74f18e64cfa3b'
+
+# Load .env file
+load_dotenv()
+
+# Get the secret key
+SECRET_KEY = os.getenv("SECRET_KEY")
+# Set the secret key for the Flask app
+app.secret_key = SECRET_KEY
+
 
 # Load the trained models and vectorizers
 svc_model_status = joblib.load("saved_models/tuned_svm_model_status.pkl")
